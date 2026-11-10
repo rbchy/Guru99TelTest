@@ -36,6 +36,34 @@ public class AddCustomerPage extends BasePage {
 
     public void submit() {
         click(SUBMIT);
+        // The site answers an invalid form with a JavaScript alert ("please fill all fields").
+        // Turn that into a clear failure that names the fields the page complained about.
+        try {
+            var alert = new org.openqa.selenium.support.ui.WebDriverWait(driver, java.time.Duration.ofSeconds(2))
+                    .until(org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent());
+            String text = alert.getText();
+            alert.accept();
+            throw new AssertionError("Form refused: '" + text + "'. Field messages: " + validationMessages()
+                    + " | values: " + fieldValues());
+        } catch (org.openqa.selenium.TimeoutException noAlert) {
+            // submitted
+        }
+    }
+
+    /** Inline messages the page shows next to invalid fields. */
+    public java.util.List<String> validationMessages() {
+        return driver.findElements(By.cssSelector("label[id^='message'], span[id^='message'], [id^='message']"))
+                .stream().map(e -> e.getAttribute("id") + "=" + e.getText().trim())
+                .filter(t -> !t.endsWith("=")).toList();
+    }
+
+    private String fieldValues() {
+        StringBuilder sb = new StringBuilder();
+        for (var e : driver.findElements(By.cssSelector("form input, form textarea"))) {
+            sb.append(e.getAttribute("name")).append('=').append(e.getAttribute("value"))
+              .append(e.isSelected() ? "(checked)" : "").append("; ");
+        }
+        return sb.toString();
     }
 
     /** After a successful submit the confirmation page shows the new customer id. */

@@ -30,7 +30,7 @@ public final class TestData {
         String tag = Long.toString(System.currentTimeMillis(), 36);
         return new Customer(first, last,
                 (first + "." + last + "." + tag).toLowerCase() + "@example.com",
-                (100 + r.nextInt(800)) + " Test Street, Springfield",
+                (100 + r.nextInt(800)) + " Test Street Springfield", // no comma: the form rejects special characters
                 "20155501" + String.format("%02d", r.nextInt(100)));
     }
 

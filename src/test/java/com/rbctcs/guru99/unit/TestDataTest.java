@@ -19,7 +19,7 @@ class TestDataTest {
         assertTrue(c.lastName().matches("[A-Za-z]+"), "letters only: " + c.lastName());
         assertTrue(c.email().matches("[a-z0-9.]+@example\\.com"), c.email());
         assertTrue(c.phone().matches("\\d{10}"), "10 digits: " + c.phone());
-        assertFalse(c.address().isBlank());
+        assertTrue(c.address().matches("[A-Za-z0-9 ]+"), "letters, digits and spaces only (the site rejects , . # etc.): " + c.address());
     }
 
     @Test
